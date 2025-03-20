@@ -4,8 +4,8 @@ const app = express();
 app.use(express.json());
 
 // Seus tokens Z-API (confere bem certinho!)
-const ZAPI_TOKEN = 'SEU_TOKEN';
-const ZAPI_INSTANCE_ID = 'SUA_INSTANCIA';
+const ZAPI_TOKEN = 'AFB512DDD2891F0B378EC8D4';
+const ZAPI_INSTANCE_ID = '3DE7C43498DEB0E7A28332C54B267657';
 
 app.post('/', async (req, res) => {
     const { telefone, mensagem } = req.body;
