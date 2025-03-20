@@ -16,18 +16,20 @@ app.post('/', async (req, res) => {
     }
 
     const mensagem = texto?.mensagem || 'Mensagem vazia';
-    const resposta = `Recebi: ${mensagem}. NutriZap tá online!`;
+    const resposta = `Recebi: "${mensagem}". NutriZap tá online!`;
 
     try {
-        await axios.post(`https://api.z-api.io/instances/${ZAPI_INSTANCE_ID}/token/${ZAPI_TOKEN}/send-text`, {
-            phone: telefone,
+        console.log("Enviando para Z-API:", telefone, resposta);
+
+        const apiResponse = await axios.post(`https://api.z-api.io/instances/${ZAPI_INSTANCE_ID}/token/${ZAPI_TOKEN}/send-text`, {
+            phone: telefone,   // OBRIGATÓRIO ser 'phone'
             message: resposta
         });
 
-        console.log('Mensagem enviada com sucesso');
-        res.status(200).send('Mensagem enviada');
+        console.log('Mensagem enviada com sucesso:', apiResponse.data);
+        res.status(200).send('Mensagem enviada!');
     } catch (err) {
-        console.error('Erro ao enviar:', err.response?.data || err.message);
+        console.error('Erro ao enviar:', err?.response?.data || err.message);
         res.status(500).send('Erro ao enviar mensagem');
     }
 });
