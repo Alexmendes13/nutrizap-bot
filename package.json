@@ -1,0 +1,10 @@
+{
+  "name": "nutrizap-bot",
+  "version": "1.0.0",
+  "description": "Bot de nutrição para WhatsApp",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {}
+}
