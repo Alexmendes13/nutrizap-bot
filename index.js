@@ -1,38 +1,24 @@
-const express = require('express');
-const axios = require('axios'); // ✅ IMPORTANTE pra funcionar a API
-const app = express();
-app.use(express.json());
+app.post('/webhook', async (req, res) => {
+    const body = req.body;
+    console.log('Webhook recebido:', JSON.stringify(body, null, 2));
 
-// Seus tokens da Z-API (confere bem certinho!)
-const ZAPI_TOKEN = 'AFB512DDD2891F0B378ECB04';
-const ZAPI_INSTANCE_ID = '3DE7C43498DEB0E7A28332C54B267657';
+    const message = body.text?.message || '';
+    const phone = body.phone;
 
-app.post('/', async (req, res) => {
-    const { telefone, mensagem } = req.body;
-    console.log('Recebido:', req.body);
+    // Aqui entra IA depois, por enquanto resposta simples
+    const resposta = `Recebi sua mensagem: ${message}`;
 
-    if (!telefone) {
-        return res.status(400).json({ error: 'Telefone obrigatório' });
+    if (phone) {
+        try {
+            await axios.post(`https://api.z-api.io/instances/${ZAPI_INSTANCE_ID}/token/${ZAPI_TOKEN}/send-text`, {
+                phone: phone,
+                message: resposta
+            });
+            console.log('Resposta enviada com sucesso!');
+        } catch (err) {
+            console.error('Erro ao responder:', err?.response?.data || err.message);
+        }
     }
 
-    const resposta = `Recebi: ${mensagem || 'Mensagem vazia'}. NutriZap tá online! 🚀`;
-
-    try {
-        console.log("Enviando para Z-API:", telefone, resposta);
-        const apiResponse = await axios.post(`https://api.z-api.io/instances/${ZAPI_INSTANCE_ID}/token/${ZAPI_TOKEN}/send-text`, {
-            phone: telefone,
-            message: resposta
-        });
-
-        console.log('Mensagem enviada com sucesso:', apiResponse.data);
-        res.status(200).send('Mensagem enviada');
-    } catch (err) {
-        console.error('Erro ao enviar:', err?.response?.data || err.message);
-        res.status(500).send('Erro ao enviar mensagem');
-    }
+    res.sendStatus(200); // sempre responde ok pro webhook
 });
-
-app.get('/', (req, res) => res.send('NutriZap rodando 🔥'));
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Rodando na porta ${PORT}`));
