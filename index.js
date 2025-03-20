@@ -4,8 +4,8 @@ const app = express();
 app.use(express.json());
 
 // Tokens da Z-API
-const ZAPI_TOKEN = 'AFB512DDD2891F0B378ECB4D';
-const ZAPI_INSTANCE_ID = '3DE7C43498DBE0E7A28332C54B267657';
+const ZAPI_TOKEN = 'AFB512DDD2891F0B378EC8D4';
+const ZAPI_INSTANCE_ID = '3DE7C43498DBE07A28332C54B267657';
 
 app.post('/', async (req, res) => {
     const { telefone, texto } = req.body;
@@ -20,9 +20,8 @@ app.post('/', async (req, res) => {
 
     try {
         console.log("Enviando para Z-API:", telefone, resposta);
-
         const apiResponse = await axios.post(`https://api.z-api.io/instances/${ZAPI_INSTANCE_ID}/token/${ZAPI_TOKEN}/send-text`, {
-            phone: telefone,   // OBRIGATÓRIO ser 'phone'
+            phone: telefone,
             message: resposta
         });
 
