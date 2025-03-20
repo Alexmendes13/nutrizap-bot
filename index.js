@@ -1,36 +1,15 @@
-const express = require('express');
-const axios = require('axios');
-const app = express();
-app.use(express.json());
-
-// Seus tokens Z-API (confere bem certinho!)
-const ZAPI_TOKEN = 'AFB512DDD2891F0B378EC8D4';
-const ZAPI_INSTANCE_ID = '3DE7C43498DEB0E7A28332C54B267657';
-
-app.post('/', async (req, res) => {
-    const { telefone, mensagem } = req.body;
-
-    if (!telefone) {
-        return res.status(400).json({ error: 'Telefone obrigatório' });
+const openaiResponse = await axios.post(
+  'https://api.openai.com/v1/chat/completions',
+  {
+    model: 'gpt-3.5-turbo',
+    messages: [{ role: 'user', content: mensagem }]
+  },
+  {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
     }
+  }
+);
 
-    const resposta = `Recebi: ${mensagem || 'Mensagem vazia'}. NutriZap tá online! 🚀`;
-
-    try {
-        const apiResponse = await axios.post(`https://api.z-api.io/instances/${ZAPI_INSTANCE_ID}/token/${ZAPI_TOKEN}/send-text`, {
-            phone: telefone,
-            message: resposta
-        });
-
-        console.log('Mensagem enviada com sucesso!', apiResponse.data);
-        res.status(200).send('Mensagem enviada');
-    } catch (err) {
-        console.error('Erro ao enviar mensagem', err.response?.data || err.message);
-        res.status(500).send('Erro ao enviar mensagem');
-    }
-});
-
-app.get('/', (req, res) => res.send('NutriZap rodando 🔥'));
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Rodando na porta ${PORT}`));
+const resposta = openaiResponse.data.choices[0].message.content;
