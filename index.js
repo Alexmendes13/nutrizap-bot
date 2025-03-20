@@ -21,10 +21,9 @@ app.post('/', async (req, res) => {
     try {
         console.log("Enviando para Z-API:", telefone, resposta);
         const apiResponse = await axios.post(`https://api.z-api.io/instances/${ZAPI_INSTANCE_ID}/token/${ZAPI_TOKEN}/send-text`, {
-            phone: telefone,
-            message: resposta
-        });
-
+    phone: telefone,
+    message: resposta
+});
         console.log('Mensagem enviada com sucesso:', apiResponse.data);
         res.status(200).send('Mensagem enviada!');
     } catch (err) {
